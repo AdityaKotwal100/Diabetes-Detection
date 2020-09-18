@@ -39,3 +39,18 @@ input = tf.compat.v1.estimator.inputs.pandas_input_fn(x=X_train,y=y_train,batch_
 model = tf.estimator.LinearClassifier(feature_columns=feat_cols, n_classes=2)
 model.train(input_fn = input,steps=1000)
 
+model.evaluate(input)
+
+embedded_group_col = tf.feature_column.embedding_column(group,dimension=4)
+feat_cols = [num_preg ,plasma_gluc,dias_press ,tricep ,insulin,bmi,diabetes_pedigree ,embedded_group_col, age_bucket]
+
+input_func = tf.compat.v1.estimator.inputs.pandas_input_fn(x=X_train,y=y_train,batch_size=10,num_epochs=1000,shuffle=True)
+
+dnn_model = tf.estimator.DNNClassifier(hidden_units = [10,10,10],feature_columns=feat_cols,n_classes=2)
+
+dnn_model.train(input_fn=input_func)
+
+eval_input_func =  tf.compat.v1.estimator.inputs.pandas_input_fn(x=X_test,y=y_test,batch_size=10,num_epochs=1,shuffle= False)
+
+dnn_model.evaluate(eval_input_func)
+
